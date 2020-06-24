@@ -1,0 +1,41 @@
+openapi: 3.0.1
+info:
+  title: Reddit Posts API
+  description: ''
+  version: 0.1.0
+servers:
+  - url: /api/v1
+
+paths:
+  /index:
+    get:
+      tags:
+        - Index
+      summary: Index
+      operationId: reddit_posts.api.resources.index
+      responses:
+        200:
+          description: Index
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralResponse'
+              example:
+                error: false
+                message: 'Index!'
+
+components:
+  schemas:
+    GeneralResponse:
+      type: object
+      properties:
+        error:
+          type: boolean
+        message:
+          type: string
+      example:
+        error: true
+        message: '400 - Payload error.'
+      required:
+        - error
+        - message
