@@ -1,14 +1,12 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from flask_mongoengine import MongoEngine
 
-db = SQLAlchemy()
+db = MongoEngine()
 
 
 def init_app(app: Flask):
     """
-    Init database and migrates
+    Init database
     :param app: Flask
     """
     db.init_app(app)
-    Migrate(app, db)

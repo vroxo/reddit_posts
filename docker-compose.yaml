@@ -1,0 +1,36 @@
+version: '3.7'
+services:
+  mongo:
+    image: mongo:latest
+    container_name: reddit_posts_db
+    environment:
+      - MONGO_INITDB_DATABASE=reddit_posts
+      - MONGO_INITDB_ROOT_USERNAME=winnin
+      - MONGO_INITDB_ROOT_PASSWORD=winnin
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongo-volume:/data/db
+    ports:
+      - '27017-27019:27017-27019'
+    networks:
+      - winnin
+
+  web:
+    container_name: reddit_posts
+    build: .
+    command: flask run -h 0.0.0.0
+    volumes:
+      - .:/usr/src/app/
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env
+    depends_on:
+      - mongo
+    networks:
+      - winnin
+
+networks:
+  winnin:
+volumes:
+  mongo-volume:

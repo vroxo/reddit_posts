@@ -1,0 +1,21 @@
+[default]
+DEBUG = true
+SECRET_KEY = "d95b2734702ca5e47152e6f41bab4ad859a60d397f912da2"
+
+MONGODB_SETTINGS.host = 'mongo'
+MONGODB_SETTINGS.db = 'reddit_posts'
+MONGODB_SETTINGS.username = 'winnin'
+MONGODB_SETTINGS.password = 'winnin'
+MONGODB_SETTINGS.authentication_source = 'admin'
+
+EXTENSIONS = [
+    "reddit_posts.ext.database",
+    "reddit_posts.ext.commands",
+    "reddit_posts.ext.scheduler"
+]
+
+URI_REDDIT = "https://api.reddit.com/r/artificial/hot"
+
+[testing]
+MONGODB_SETTINGS.host = 'mongomock://localhost'
+MONGODB_SETTINGS.db = 'test'

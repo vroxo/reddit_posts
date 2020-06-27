@@ -23,12 +23,16 @@ class TestServices:
 
     def test_get_hot_posts(self, mocker, response):
         mocker.patch('reddit_posts.services.requests.get', return_value=response)
-        posts = RedditService().get_hot_posts()
+        response_id, posts = RedditService().get_hot_posts()
         for post in posts:
+            assert response_id == 't3_hdyiaf'
+            assert isinstance(response_id, str)
             assert isinstance(post, RedditServiceDto)
 
     def test_get_hot_posts_error(self, mocker, response):
         response.status_code = 404
         response.json.return_value = {'error': True, 'message': 'Not found!'}
+
+        mocker.patch('reddit_posts.services.requests.get', return_value=response)
         with pytest.raises(RuntimeError):
             RedditService().get_hot_posts()

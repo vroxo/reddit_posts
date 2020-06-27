@@ -7,12 +7,19 @@ servers:
   - url: /api/v1
 
 paths:
-  /index:
-    get:
+  /hot-posts:
+    post:
       tags:
         - Index
       summary: Index
-      operationId: reddit_posts.api.resources.index
+      operationId: reddit_posts.api.resources.get_hot_posts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchByDate'
+
       responses:
         200:
           description: Index
@@ -20,9 +27,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralResponse'
-              example:
-                error: false
-                message: 'Index!'
+
+  /users/{order}:
+    get:
+      tags:
+        - Users
+      summary: Users
+      operationId: reddit_posts.api.resources.get_users
+      parameters:
+        - name: order
+          description: Order
+          in: path
+          required: true
+          schema:
+            type: string
+            format: path
+
+      responses:
+        200:
+          description: Index
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralResponse'
 
 components:
   schemas:
@@ -33,9 +60,68 @@ components:
           type: boolean
         message:
           type: string
-      example:
-        error: true
-        message: '400 - Payload error.'
+        data:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/RedditPost'
+              - $ref: '#/components/schemas/RedditUser'
       required:
         - error
         - message
+        - data
+
+    RedditPost:
+      type: object
+      properties:
+        title:
+          type: string
+        author:
+          type: string
+        author_name:
+          type: string
+        created:
+          type: string
+          format: date-time
+        ups:
+          type: integer
+        comments:
+          type: integer
+      required:
+        - title
+        - author
+        - author_name
+        - created
+        - ups
+        - comments
+
+    RedditUser:
+      type: object
+      properties:
+        user:
+          type: string
+        ups:
+          type: integer
+        comments:
+          type: integer
+      required:
+        - user
+        - ups
+        - comments
+
+    SearchByDate:
+      type: object
+      properties:
+        init_date:
+          type: string
+          pattern: ^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$
+        end_date:
+          type: string
+          pattern: ^([0-2][0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}$
+        order:
+          type: string
+      required:
+        - init_date
+        - end_date
+        - order
+
