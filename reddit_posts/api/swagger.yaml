@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Reddit Posts API
-  description: ''
+  title: Reddit Hot Posts API
+  description: 'Application created to analyze all hot reddit posts'
   version: 0.1.0
 servers:
   - url: /api/v1
@@ -10,8 +10,9 @@ paths:
   /hot-posts:
     post:
       tags:
-        - Index
-      summary: Index
+        - Hot Posts
+      description: 'Lists all the hot posts saved from the database according to the date range passed via json and ordered by number of ups or comments.'
+      summary: Hot posts
       operationId: reddit_posts.api.resources.get_hot_posts
       requestBody:
         required: true
@@ -22,21 +23,33 @@ paths:
 
       responses:
         200:
-          description: Index
+          description: Success!
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralResponse'
 
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralResponse'
+              example:
+                error: true
+                message: '{Error Message}'
+                data: []
+
   /users/{order}:
     get:
       tags:
         - Users
+      description: "Lists the sum of comments and ups per user sorted in descending order according to the chosen option: 'ups' or 'comments'"
       summary: Users
       operationId: reddit_posts.api.resources.get_users
       parameters:
         - name: order
-          description: Order
+          description: "Users descending sort option, valid values ​​are 'ups' or' comments'"
           in: path
           required: true
           schema:
@@ -45,11 +58,25 @@ paths:
 
       responses:
         200:
+          description: Success!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeneralResponse'
+              example:
+                error: false
+                message: Success!
+                data: [{"comments": 16, "ups": 127, "user": "CyberByte"}]
+        400:
           description: Index
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GeneralResponse'
+              example:
+                error: true
+                message: '{Error Message}'
+                data: []
 
 components:
   schemas:
@@ -70,6 +97,11 @@ components:
         - error
         - message
         - data
+      example:
+        error: false
+        message: 'Success!'
+        data: [{"author": t2_3ps7w65l, "author_name": wstcpyt1988, "comments": 1, "created": '2020-06-26T10:00:27Z', "title": 'Support Vector Machines: All you need to know!', "ups": 50}]
+
 
     RedditPost:
       type: object
@@ -94,6 +126,14 @@ components:
         - created
         - ups
         - comments
+      example:
+        author: t2_3ps7w65l
+        author_name: wstcpyt1988
+        comments: 1
+        created: '2020-06-26T10:00:27Z'
+        title: 'Support Vector Machines: All you need to know!'
+        ups: 50
+
 
     RedditUser:
       type: object
@@ -108,6 +148,12 @@ components:
         - user
         - ups
         - comments
+      example:
+        comments: 16
+        ups: 127
+        user: CyberByte
+
+
 
     SearchByDate:
       type: object
@@ -124,4 +170,9 @@ components:
         - init_date
         - end_date
         - order
+      example:
+        init_date: '01/06/2020'
+        end_date: '30/06/2020'
+        order: 'ups'
+
 
